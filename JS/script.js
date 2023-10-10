@@ -3,6 +3,7 @@ var courses = new Set();
 var tabel = document.getElementById('tab');
 
 const callback = () => {
+    saveLocalValues();
     const codeInput = document.querySelector('#code');
     let code = codeInput.value;
     let competitions;
@@ -39,7 +40,7 @@ function getCompetitionsJSONs(code) {
         compets.forEach(function(item, i, compets) {
             
             getCompetitionResult(item, code).then((res) => {
-                if (res.Competition.HasSubcompetitions != 0)
+                if ((res.Competition.HasSubcompetitions != 0) || (res.Competition.Results.length == 0))
                     return;
                 window.competitions.push(res);
                 
@@ -49,18 +50,20 @@ function getCompetitionsJSONs(code) {
                     courseTile = document.createElement('div');
                     courseTile.classList.add('course-tile');
                     courseTile.id = 'course-' + courseId;
-                    courseTile.textContent = res.Competition.CourseName;
+                    let courseName = res.Competition.CourseName.replaceAll("&rarr;", "→");
+                    courseTile.textContent = courseName;
                     tabel.appendChild(courseTile);
                 }
 
                 let competitionId = item;
                 let competitionTile = document.getElementById('competition-' + competitionId);
-                if ((competitionTile == null) && (res.Competition.HasSubcompetitions == 0)) {
+                if (competitionTile == null) {
 
                     competitionTile = document.createElement('div');
                     competitionTile.classList.add('competition-tile');
                     competitionTile.id = 'competition-' + competitionId;
-                    competitionTile.textContent = res.Competition.Name;
+                    let competitionName = res.Competition.Name.replaceAll("&rarr;", "→");
+                    competitionTile.textContent = competitionName
                     courseTile.appendChild(competitionTile);
                 }
             });
@@ -70,5 +73,23 @@ function getCompetitionsJSONs(code) {
     })
 }
 
+function setLocalValues() {
+
+    let inputFields = document.getElementsByTagName("input");
+    for (const iterator of inputFields) {
+        let storageValue = localStorage.getItem(iterator.id);
+        iterator.value = storageValue;
+    }
+}
+
+function saveLocalValues() {
+    let inputFields = document.getElementsByTagName("input");
+
+    for (const iterator of inputFields) {
+        localStorage.setItem(iterator.id, iterator.value);
+    }
+}
+
+setLocalValues();
 const button = document.querySelector('#button1');
 button.addEventListener('click', callback);
