@@ -39,6 +39,8 @@ function getCompetitionsJSONs(code) {
         compets.forEach(function(item, i, compets) {
             
             getCompetitionResult(item, code).then((res) => {
+                if (res.Competition.HasSubcompetitions != 0)
+                    return;
                 window.competitions.push(res);
                 
                 let courseId = res.Competition.CourseID;
@@ -53,7 +55,8 @@ function getCompetitionsJSONs(code) {
 
                 let competitionId = item;
                 let competitionTile = document.getElementById('competition-' + competitionId);
-                if (competitionTile == null) {
+                if ((competitionTile == null) && (res.Competition.HasSubcompetitions == 0)) {
+
                     competitionTile = document.createElement('div');
                     competitionTile.classList.add('competition-tile');
                     competitionTile.id = 'competition-' + competitionId;

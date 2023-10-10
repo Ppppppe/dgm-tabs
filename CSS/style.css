@@ -7,10 +7,11 @@
 .course-tile {
     border: 2px solid green;
     margin: 3em;
-    padding: 2em;
+    padding: 1em;
 }
 
 .competition-tile {
     border: 1px solid blue;
     padding: 0.5em;
+    margin: 0.5em;
 }
